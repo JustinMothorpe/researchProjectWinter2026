@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 from torchvision.models.mobilenetv3 import mobilenet_v3_small
 class MobileNetV3Lite(nn.Module):
