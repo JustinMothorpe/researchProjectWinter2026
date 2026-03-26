@@ -29,10 +29,10 @@ class DepthHead(nn.Module):
             )
         )
     def forward(self, x):
-        x = self.decorder(x)    #   [B, 1, H, W]
+        x = self.decoder(x)    #   [B, 1, H, W]
         x = functional.interpolate(
             x,
-            size = (self.outH, self.outw),
+            size = (self.outH, self.outW),
             mode = "bilinear",
             align_corners = False
         )

@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 from torchvision.models.mobilenetv3 import mobilenet_v3_small
 class MobileNetV3Lite(nn.Module):
@@ -14,8 +15,8 @@ class MobileNetV3Lite(nn.Module):
     def convertToOs8(self):
         # modify the last lares to increase spatial resolution
         for layer in self.features[-3:]:
-            if hasattr(layer, "conv"):
+            if hasattr(layer, "block"):
                 layer.conv[0].stride = (1, 1)
 
     def forward(self, x):
-        return self.features(x) #feature map
+        return self.features(x) #feature map MUST return a tensor

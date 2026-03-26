@@ -1,29 +1,70 @@
 import torch
 import torch.nn as nn
+"""class SingleTaskDetectionModel(nn.Module):
+    def __init__(
+            self, 
+            inChannels: int,
+            numClasses: int,
+            numAnchors: int
+        ):
+        super().__init__()
+        if numAnchors is None:
+            numAnchors = 1
+        self.numClasses = int(numClasses)
+        self.numAnchors = int(numAnchors)
+        self.conv = nn.Sequential(
+            nn.Conv2d(
+                inChannels,
+                256,
+                kernel_size=3,
+                padding=1                
+            ),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(
+                256,
+                256,
+                kernel_size=3,
+                padding=1
+            ),
+            nn.ReLU(inplace=True)
+        )
 
+        outChannels = self.numAnchors * (4 + 1 + self.numClasses)
+        self.pred = nn.Conv2d"""
 class DetectionHead(nn.Module):
     def __init__(
             self, 
-            inChannels:int, 
-            numClasses:int,
-            numAnchors:int = 1
+            inChannels: int,
+            numClasses: int,
+            numAnchors: int
         ):
         super().__init__()
-        self.numClasses = numClasses
-        self.numAnchors = numAnchors
-    
-        #conv tower
+        if numAnchors is None:
+            numAnchors = 1
+        self.numClasses = int(numClasses)
+        self.numAnchors = int(numAnchors)
         self.conv = nn.Sequential(
-            nn.conv2dIn(inChannels,  256, kernal_size=3, padding=1),
+            nn.Conv2d(
+                inChannels,
+                256,
+                kernel_size=3,
+                padding=1                
+            ),
             nn.ReLU(inplace=True),
-            nn.conv2dIn(256, 256, kernal_size=3, padding=1),
-            nn.relu(inplkace=True),
+            nn.Conv2d(
+                256,
+                256,
+                kernel_size=3,
+                padding=1
+            ),
+            nn.ReLU(inplace=True)
         )
-        #output conv: 4 box + 1 obj + numClasses per anchor
-        self.pred = nn.conv2d(
+
+        outChannels = self.numAnchors * (4 + 1 + self.numClasses)
+        self.pred = nn.Conv2d(
             256,
-            numAnchors * (4+1+numClasses),
-            kernal_size=1
+            outChannels,
+            kernel_size=1
         )
 
     def forward(self, x):
@@ -32,12 +73,12 @@ class DetectionHead(nn.Module):
 
         B, C, H, W = x.shape
         x = x.view(
-                B, 
-                self.numAnchors, 
-                4 + 1 + self.numClasses, 
-                H, 
-                W
-            )
+            B, 
+            self.numAnchors, 
+            4 + 1 + self.numClasses, 
+            H, 
+            W
+        )
         #[B, numAnchors, 4+1+numClasses, H, W]
         return x
         

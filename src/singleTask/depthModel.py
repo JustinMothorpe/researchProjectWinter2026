@@ -5,9 +5,13 @@ from src.heads.depthHead import DepthHead
 class SingleTaskSegmentationModel(nn.Module):
     def __init__(
             self, 
-            imgSize = (480, 640)
+            imgSize: int
     ):
         super().__init__()
+        
+        if imgSize is None:
+            imgSize = (480, 640)
+        
         self.backbone = MobileNetV3Lite()
         self.head = DepthHead(
             inChannels = 578,
