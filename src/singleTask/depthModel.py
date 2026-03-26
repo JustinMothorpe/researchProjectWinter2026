@@ -1,0 +1,20 @@
+import torch.nn as nn
+from src.backbone.mobileNetv3 import MobileNetV3Lite
+from src.heads.depthHead import DepthHead
+
+class SingleTaskSegmentationModel(nn.Module):
+    def __init__(
+            self, 
+            imgSize = (480, 640)
+    ):
+        super().__init__()
+        self.backbone = MobileNetV3Lite()
+        self.head = DepthHead(
+            inChannels = 578,
+            outSize = imgSize
+        )
+    
+    def forward(self, x):
+        feats = self.backbone(x)
+        depth = self.head(feats)
+        return depth
