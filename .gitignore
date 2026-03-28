@@ -25212,3 +25212,6 @@ venv/Lib/site-packages/torch/include/ATen/ops/_linalg_svd_meta.h
 venv/Lib/site-packages/torch/include/ATen/ops/_linalg_svd_meta_dispatch.h
 venv/Lib/site-packages/torch/include/ATen/ops/_linalg_svd_native.h
 venv/Lib/site-packages/torch/include/ATen/ops/_linalg_svd_ops.h
+src/singleTask/__pycache__/singleDepthModel.cpython-311.pyc
+src/singleTask/__pycache__/singleDetModel.cpython-311.pyc
+src/singleTask/__pycache__/singlesegModel.cpython-311.pyc
