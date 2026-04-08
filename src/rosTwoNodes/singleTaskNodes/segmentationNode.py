@@ -7,14 +7,14 @@ import cv2
 import numpy as np
 
 from ....trtInferUtils import TRTInference
-from ...sharedUtils.preprocess import preprocess, drawDetections
+from ...sharedUtils.preprocess import preprocess, overlaySegmentation
 
-class DetNode(Node):
+class SegNode(Node):
     def __init__(self):
-        super.__init__('detNodes')
+        super.__init__('segNodes')
         self.declareParameter(
-            'enginePath', 
-            'singleDet.engine'
+            'enginePat'
+            'singleSeg.engine'
         )
         enginePath = self.get_parameter('enginePath').get_parameter_value().string_value
 
@@ -29,7 +29,7 @@ class DetNode(Node):
         )
         self.pub = self.create_publisher(
             Image,
-            '/det/image',
+            '/seg/image',
             10
         )
 
@@ -37,10 +37,10 @@ class DetNode(Node):
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding = 'bgr8')
         inp, vis = preprocess(frame)
         outputs = self.trtModel.infer(inp)
-        det = outputs['detection']
-        vis = drawDetections(
-            vis, 
-            det
+        seg = outputs['segmentation']
+        vis = overlaySegmentation(
+            vis,
+            seg
         )
 
         outMsg = self.bridge.cv2_to_imgmsg(
@@ -55,7 +55,7 @@ class DetNode(Node):
 
 def main(args = None):
     rclpy.init(args=args)
-    node = DetNode()
+    node = SegNode()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

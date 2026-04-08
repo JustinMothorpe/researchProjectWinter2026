@@ -2,59 +2,10 @@ import cv2
 import numpy as np
 import time
 from trtInferUtils import TRTInference
-from src.sharedUtils.preprocess import preprocess
+from src.sharedUtils.preprocess import preprocess, drawDetections
 
 ENGINEPATH = "singleSeg.engine"
 
-def drawDetections(frame, det):
-    det = det[0]
-    h, w = frame.shape[:2]
-
-    for box in det:
-        x1, y1, x2, y2, score, cls = box
-        if score < 0.5:
-            continue
-
-        x1 = int(x1 * w)
-        y1 = int(y1 * h)
-        x2 = int(x2 * w)
-        y2 = int(y2 * h)
-
-        cv2.rectangle(
-            frame,
-            (
-                x1,
-                y1
-            ),
-            (
-                x2,
-                y2
-            ),
-            (
-                0,
-                255,
-                0
-            ),
-            2
-        )
-        cv2.putText(
-            frame,
-            f"{score:.2f}",
-            (
-                x1,
-                y1-5
-            ),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.6,
-            (
-                0,
-                255,
-                0
-            ),
-            2
-        )
-    
-    return frame
 
 def main():
     trtModel = TRTInference(ENGINEPATH)

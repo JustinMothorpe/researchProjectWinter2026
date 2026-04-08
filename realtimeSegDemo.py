@@ -2,29 +2,10 @@ import cv2
 import numpy as np
 import time
 from trtInferUtils import TRTInference
-from src.sharedUtils.preprocess import preprocess
+from src.sharedUtils.preprocess import preprocess, overlaySegmentation
 
 ENGINEPATH = "singleSeg.engine"
 
-def overlaySegmentation(frame, seg):
-    segMask = (seg[0, 0] > 0.5).astype(np.uint8) * 255
-    segMask = cv2.resize(
-        segMask, 
-        (
-            frame.shape[1], 
-            frame.shape[0]
-        )
-    )
-
-    color = np.zeros_like(frame)
-    color[:, :, 1] = segMask
-    return cv2.addWeighted(
-        frame, 
-        0.7, 
-        color,
-        0.3,
-        0
-    ) 
 
 def main():
     trtModel = TRTInference(ENGINEPATH)
