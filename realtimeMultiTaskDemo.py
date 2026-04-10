@@ -10,7 +10,13 @@ ENGINEPATH = "multiTaskModel.engine"
 def main():
     trtModel = TRTInference(ENGINEPATH)
 
-    cap = cv2.VideoCapture(0)
+    pipeline = (
+        "nvarguscamerasrc sensor-id=0 ! "
+        "video/x-raw(memory:NVMM), width=1280, height=720, framerate=30/1 ! "
+        "nvvidconv ! video/x-raw, format=BGRx ! "
+        "videoconvert ! video/x-raw, format=BGR ! appsink"
+    )
+    cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
     if not cap.isOpened():
         print("Camera not found")
         return
@@ -44,7 +50,7 @@ def main():
         
         
         now = time.time()
-        fps = 0.9 * fps + 0.1 * (1  (now - prev))
+        fps = 0.9 * fps + 0.1 * (1 / (now - prev))
         prev = now
         cv2.putText(
             vis, 

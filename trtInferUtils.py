@@ -1,4 +1,4 @@
-import tensorRT as trt
+import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit
 import numpy as np
@@ -19,33 +19,38 @@ class TRTInference:
             return runtime.deserialize_cuda_engine(f.read())
     
     def allocateBuffers(self):
-        for i in range(self.engine.num_bindings):
-            name = self.engine.get_binding_name(i)
-            dtype = trt.nptype(self.engine.get_binding_dtype(i))
-            shape = self.context.get_binding_shape(i)
+        numTensors = self.engine.num_io_tensors
+        self.bindings = [None] * numTensors
+        self.inputs = []
+        self.outputs = []
 
-            size = int(np.prod(shape))
-            host_mem = cuda.pagelocked_empty_like(size, dtype)
-            device_mem = cuda.mem_alloc_like(host_mem.nbytes)
+        for i in range(numTensors):
+            name = self.engine.get_tensor_name(i)
+            shape = self.engine.get_tensor_shape(name)
+            dtype = trt.nptype(self.engine.get_tensor_dtype(name))
 
-            self.bindings.append(int(device_mem))
+            size = trt.volume(shape)
+            hostMem = np.empty(size, dtype=dtype)
+            deviceMem = cuda.mem_alloc(hostMem.nbytes)
 
-            if self.engine.binding_is_input(i):
-                self.inputs.append((host_mem, device_mem, name, shape))
+            self.bindings[i] = int(deviceMem)
+
+            if self.engine.get_tensor_mode(name) == trt.TensorIOMode.INPUT:
+                self.inputs.append((hostMem, deviceMem, name, shape))
             else:
-                self.outputs.append((host_mem, device_mem, name, shape))
+                self.outputs.append((hostMem, deviceMem, name, shape))
     
     def infer(self, input_tensor: np.ndarray):
-        host_mem, device_mem, _, _ = self.inputs[0]
+        hostMem, deviceMem, _, _ = self.inputs[0]
 
-        np.copyto(host_mem, input_tensor.ravel())
-        cuda.memcpy_hotd(device_mem, host_mem)
+        np.copyto(hostMem, input_tensor.ravel())
+        cuda.memcpy_hotd(deviceMem, hostMem)
 
         self.context.execute_v2(self.bindings)
 
         results = {}
-        for host_mem, device_mem, name, shape in self.outputs:
-            cuda.memcpy_dtoh(host_mem, device_mem)
-            results[name] = host_mem.reshape(shape)
+        for hostMem, deviceMem, name, shape in self.outputs:
+            cuda.memcpy_dtoh(hostMem, deviceMem)
+            results[name] = hostMem.reshape(shape)
         
         return results

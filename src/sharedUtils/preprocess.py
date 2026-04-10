@@ -1,9 +1,5 @@
 import cv2
 import numpy as np
-from trtInferUtils import TRTInference
-from rclpy.node import Node
-from sensor_msgs.msg import Image
-from std_msgs.msg import CvBridge
 
 def preprocess(frame):
     frameResized = cv2.resize(
