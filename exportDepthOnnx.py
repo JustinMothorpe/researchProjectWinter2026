@@ -1,7 +1,9 @@
 import torch
 from src.singleTask.singleDepthModel import SingleDepthModel
+from .src.sharedUtils.sizeMain import MainSize
 
 def main():
+    size = MainSize(480, 640)
     model = SingleDepthModel(
         imgSize = (480, 640)    
     )
@@ -9,8 +11,8 @@ def main():
     dummy = torch.randn(
             1, 
             3, 
-            480, 
-            360
+            size.getSize(False), 
+            size.getSize(True)
         )
     
     torch.onnx.export(

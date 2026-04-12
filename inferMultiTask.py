@@ -1,10 +1,12 @@
 import numpy as np
 from trtInferUtils import TRTInference
+from .src.sharedUtils.sizeMain import MainSize
 
 def main():
+    size = MainSize(480, 640)
     trtModel= TRTInference("multiTastModel.engine")
 
-    img = np.random.randn(1, 3, 480, 640).astype(np.float32)
+    img = np.random.randn(1, 3, size.getSize(False), size.getSize(True)).astype(np.float32)
 
     outputs = trtModel.infer(img)
 

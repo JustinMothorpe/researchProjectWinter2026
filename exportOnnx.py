@@ -1,10 +1,14 @@
 import torch
 from src.multiTask.multiTaskModel import MultiTaskModel
+from .src.sharedUtils.sizeMain import MainSize
+
+size = MainSize(480, 640)
 
 model = MultiTaskModel(
     numClassesDet=1,
     numClassesSeg=1,
-    imgSize=(480, 640),
+    imgSize=(size.getSize(False), 
+            size.getSize(True)),
     numAnchors=1
 )
 
