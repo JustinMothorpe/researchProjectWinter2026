@@ -26,12 +26,14 @@ class TRTInference:
 
         for i in range(numTensors):
             name = self.engine.get_tensor_name(i)
-            shape = self.engine.get_tensor_shape(name)
+            shape = self.context.get_tensor_shape(name)
             dtype = trt.nptype(self.engine.get_tensor_dtype(name))
 
-            size = trt.volume(shape)
+            size = np.prod(shape)
             hostMem = np.empty(size, dtype=dtype)
             deviceMem = cuda.mem_alloc(hostMem.nbytes)
+
+            self.context.set_tensor_address(name, int(deviceMem))
 
             self.bindings[i] = int(deviceMem)
 
@@ -41,10 +43,14 @@ class TRTInference:
                 self.outputs.append((hostMem, deviceMem, name, shape))
     
     def infer(self, input_tensor: np.ndarray):
-        hostMem, deviceMem, _, _ = self.inputs[0]
+        hostMem, deviceMem, name, shape = self.inputs[0]
+        
+        #because of problems I am resorting to this measure:
+        assert input_tensor.size == hostMem.size, \
+            f"Input tensor size{input_tensor.size} != engine expecte {hostMem.size}"
 
         np.copyto(hostMem, input_tensor.ravel())
-        cuda.memcpy_hotd(deviceMem, hostMem)
+        cuda.memcpy_htod(deviceMem, hostMem)
 
         self.context.execute_v2(self.bindings)
 
