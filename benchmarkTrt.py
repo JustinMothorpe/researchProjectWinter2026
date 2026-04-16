@@ -13,9 +13,10 @@ MODELS = {
 def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
     print(f"\n=== Benchmarking {name} ===")
     trtModel = TRTInference(enginePath)
-
+    _, _, _, inputShape = trtModel.inputs[0]
     # Dummy input
-    img = np.random.randn(1, 3, 480, 640).astype(np.float32)
+    img = np.random.randn(*inputShape).astype(np.float32)
+    #print(f"[BENCH] Generated img.shape: {img.shape}, size: {img.size}")
 
     # Warm-up
     for _ in range(warmup):
@@ -23,16 +24,16 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
 
     img = []
     for _ in range(runs):
-        img.append(
-            np.random.randn(
-                1, 
-                3, 
-                480, 
-                640
+        newImg = np.random.randn(
+                *inputShape
             ).astype(
                 np.float32
             )
+        img.append(
+            newImg
         )
+        #print(f"[BENCH] Generated img.shape: {newImg.shape}, size: {newImg.size}")
+
     
     # Timed runs
     timedRunsInd = []
@@ -40,6 +41,9 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
     start = prev
 
     for i in range(runs):
+        #print(f"[BENCH] Using input shape from engine: {img[i].shape}")
+        #print(f"[BENCH] Total elements: {img[i].shape}")
+
         trtModel.infer(img[i])
         now = time.time()
         timedRunsInd.append((now,prev))

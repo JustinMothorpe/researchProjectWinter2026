@@ -1,0 +1,21 @@
+/usr/src/tensorrt/bin/trtexec \
+  --onnx=Downloads/researchProjectWinter2026-main/singleDet.onnx \
+  --saveEngine=Downloads/researchProjectWinter2026-main/singleDet.engine \
+  --fp16
+
+/usr/src/tensorrt/bin/trtexec \
+  --onnx=Downloads/researchProjectWinter2026-main/singleSeg.onnx \
+  --saveEngine=Downloads/researchProjectWinter2026-main/singleSeg.engine \
+  --fp16
+
+/usr/src/tensorrt/bin/trtexec \
+  --onnx=Downloads/researchProjectWinter2026-main/singleDepth.onnx \
+  --saveEngine=Downloads/researchProjectWinter2026-main/singleDepth.engine \
+  --fp16
+
+/usr/src/tensorrt/bin/trtexec \
+  --onnx=Downloads/researchProjectWinter2026-main//multiTaskModel.onnx \
+  --saveEngine=Downloads/researchProjectWinter2026-main/multiTaskModel.engine \
+  --fp16
+
+

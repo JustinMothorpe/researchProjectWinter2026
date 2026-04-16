@@ -44,6 +44,8 @@ class TRTInference:
     
     def infer(self, input_tensor: np.ndarray):
         hostMem, deviceMem, name, shape = self.inputs[0]
+        #print(f"[INFER] input_tensor.shape: {input_tensor.shape}, size: {input_tensor.size}")
+        #print(f"[INFER] hostMem.size: {hostMem.size}")
         
         #because of problems I am resorting to this measure:
         assert input_tensor.size == hostMem.size, \
