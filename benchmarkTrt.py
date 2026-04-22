@@ -72,7 +72,7 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
     iterations = 1
     
     for x in timedRunsInd:
-        first, last = x
+        last, first = x
         print(
             f"run {iterations} | start time: {(first-start)*1000:.2f}"
             f" ms | finish: {(last-start)*1000:.2f}"
