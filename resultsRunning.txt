@@ -1,3 +1,8 @@
+
+
+--- default power settings:
+
+
 === Benchmarking multiTask ===
 Avg inference time: 10.25 ms
 FPS: 97.60
@@ -438,7 +443,6 @@ depth      | 158.97 FPS |   6.29 ms
 
 
 ---results under 10w power constraints:
-
 
 
 === Benchmarking multiTask ===
@@ -1765,6 +1769,7 @@ depth      | 159.15 FPS |   6.28 ms
 
 
 --- at 25W the following is the output:
+
 
 === Benchmarking multiTask ===
 Avg inference time: 10.17 ms

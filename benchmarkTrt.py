@@ -53,7 +53,7 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
     
     totalRuns = 0.0
     for x in timedRunsInd:
-        first, last = x
+        last, first = x
         totalRuns = totalRuns + first - last
         
     totalTime = end - start
