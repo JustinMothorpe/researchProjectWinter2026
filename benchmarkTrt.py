@@ -84,10 +84,17 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
 
 
 def main():
+    thisInput = input("please enter no of runs, if no input or invalid input is detected, this will make 100:")
+    inputNoRuns = 100
+    if thisInput is not None:
+        try:
+            inputNoRuns = int(thisInput)
+        except (ValueError, TypeError):
+            print("not a number")
     results = {}
 
     for name, engine in MODELS.items():
-        fps, avg, _, _, _ = benchmarkEngine(name, engine)
+        fps, avg, _, _, _ = benchmarkEngine(name, engine, inputNoRuns)
         results[name] = (fps, avg)
 
     print("\n=== Summary ===")
