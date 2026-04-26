@@ -63,4 +63,4 @@ Error: Unsupported ONNX operations
 fix: Re-export ONNX with opset 17 or Higher
 
 7. Next Steps
-proceed to 03_running_single_task.md
+proceed to 03_benchmarking.md
