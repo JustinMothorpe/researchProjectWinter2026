@@ -13,7 +13,7 @@ class SegNode(Node):
     def __init__(self):
         super.__init__('segNodes')
         self.declareParameter(
-            'enginePat'
+            'enginePath'
             'singleSeg.engine'
         )
         enginePath = self.get_parameter('enginePath').get_parameter_value().string_value
