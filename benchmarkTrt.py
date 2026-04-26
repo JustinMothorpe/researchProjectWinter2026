@@ -79,12 +79,22 @@ def benchmarkEngine(name, enginePath, warmup = 10, runs = 100):
         )
         
         iterations= iterations+1
+    print("")
+    print("Straight float result from start point")
+    print("")
+    for x in timedRunsInd:
+        last, first = x
+        print(
+            f"run {iterations} | start time: {(first-start):f}"
+            f" ms | finish: {(last-start):f}"
+        )
     
     return fps, avgTime, totalfps, avgTotalTime, timedRunsInd
 
 
 def main():
-    thisInput = input("please enter no of runs, if no input or invalid input is detected, this will make 100:")
+    print("please enter no of runs, if no input or")
+    thisInput = input("invalid input is detected, this will make 100:")
     inputNoRuns = 100
     if thisInput is not None:
         try:
